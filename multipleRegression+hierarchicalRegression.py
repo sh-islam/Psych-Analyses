@@ -58,22 +58,8 @@ model = sm.OLS(y, X).fit()  # Fit the multiple regression model
 print("\nMultiple Regression Summary:")
 print(model.summary())
 
-# Save to csv
-correlation_matrix_all.to_csv('combined_correlation_matrices.csv', mode='w', header=True)
-with open('combined_correlation_matrices.csv', 'a') as file:
-    file.write('\n\n')  # Add some new lines to make it look nice
-correlation_matrix_personality.to_csv('combined_correlation_matrices.csv', mode='a', header=True)
-with open('combined_correlation_matrices.csv', 'a') as file:
-    file.write('\n\n')
-personality_leadership_correlations.to_csv('combined_correlation_matrices.csv', mode='a', header=True)
-with open('combined_correlation_matrices.csv', 'a') as file:
-    file.write('\n\n')
-# Saving multiple regression summary
-model_summary = model.summary()
-with open('combined_correlation_matrices.csv', 'a') as file:
-    file.write(model_summary.as_csv())
-
-# Create a scatter plot of 'Openness' vs. 'Authoritative Leadership' with the regression line and save to a file
+# Multiple regression scatterplots:
+# Scatter plot of 'Openness' vs. 'Authoritative Leadership' 
 plt.scatter(df['Openness'], df['Authoritative Leadership'], label='Data Points', color='blue', alpha=0.5)
 plt.xlabel('Openness')
 plt.ylabel('Authoritative Leadership')
@@ -114,3 +100,64 @@ plt.plot(df['Extraversion'], y_extraversion_pred, color='orange', linestyle='--'
 plt.legend()
 plt.savefig('combined_regression_plot.png')
 plt.close()
+
+
+# Step 5: Perform hierarchical regression analysis
+y = df['Authoritative Leadership']
+# Model with one indep var: extraversion
+X0 = sm.add_constant(df['Extraversion'])
+model0 = sm.OLS(y, X0).fit()
+print("\nModel 0 Summary (Extraversion Only):")
+print(model0.summary())
+
+# Add 'Conscientiousness' as an independent variable
+X1 = sm.add_constant(df[['Extraversion', 'Conscientiousness']])
+model1 = sm.OLS(y, X1).fit()
+print("\nModel 1 Summary (Extraversion and Conscientiousness):")
+print(model1.summary())
+
+# Add 'Openness' as an independent variable
+X2 = sm.add_constant(df[['Extraversion', 'Conscientiousness', 'Openness']])
+model2 = sm.OLS(y, X2).fit()
+print("\nModel 2 Summary (Extraversion, Conscientiousness, and Openness):")
+print(model2.summary())
+
+# Add 'Neuroticism' as an independent variable
+X3 = sm.add_constant(df[['Extraversion', 'Conscientiousness', 'Openness', 'Neuroticism']])
+model3 = sm.OLS(y, X3).fit()
+print("\nModel 3 Summary (Extraversion, Conscientiousness, Openness, and Neuroticism):")
+print(model3.summary())
+
+# Add 'Agreeableness' as an independent variable
+X4 = sm.add_constant(df[['Extraversion', 'Conscientiousness', 'Openness', 'Neuroticism', 'Agreeableness']])
+model4 = sm.OLS(y, X4).fit()
+print("\nModel 4 Summary (Extraversion, Conscientiousness, Openness, Neuroticism, and Agreeableness):")
+print(model4.summary())
+
+
+# Hierarchical scatterplots?
+
+
+# Write to csv
+correlation_matrix_all.to_csv('combined_correlation_matrices.csv', mode='w', header=True)
+with open('combined_correlation_matrices.csv', 'a') as file:
+    file.write('\n\n')  # Add some new lines to make it look nice
+correlation_matrix_personality.to_csv('combined_correlation_matrices.csv', mode='a', header=True)
+with open('combined_correlation_matrices.csv', 'a') as file:
+    file.write('\n\n')
+personality_leadership_correlations.to_csv('combined_correlation_matrices.csv', mode='a', header=True)
+with open('combined_correlation_matrices.csv', 'a') as file:
+    file.write('\n\n')
+# Writing multiple regression summary
+model_summary = model.summary()
+with open('combined_correlation_matrices.csv', 'a') as file:
+    file.write(model_summary.as_csv())
+    file.write('\n\n\n\n')
+# Writing hierchial regression
+model_summaries = [model0, model1, model2, model3, model4]
+with open('combined_correlation_matrices.csv', 'a') as file:
+    for model in model_summaries:
+        model_summary = model.summary()
+        file.write(model_summary.as_csv())
+        file.write('\n\n')
+
