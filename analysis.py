@@ -58,7 +58,7 @@ model = sm.OLS(y, X).fit()  # Fit the multiple regression model
 print("\nMultiple Regression Summary:")
 print(model.summary())
 
-# Save to file
+# Save to csv
 correlation_matrix_all.to_csv('combined_correlation_matrices.csv', mode='w', header=True)
 with open('combined_correlation_matrices.csv', 'a') as file:
     file.write('\n\n')  # Add some new lines to make it look nice
@@ -66,7 +66,12 @@ correlation_matrix_personality.to_csv('combined_correlation_matrices.csv', mode=
 with open('combined_correlation_matrices.csv', 'a') as file:
     file.write('\n\n')
 personality_leadership_correlations.to_csv('combined_correlation_matrices.csv', mode='a', header=True)
-
+with open('combined_correlation_matrices.csv', 'a') as file:
+    file.write('\n\n')
+# Saving multiple regression summary
+model_summary = model.summary()
+with open('combined_correlation_matrices.csv', 'a') as file:
+    file.write(model_summary.as_csv())
 
 # Create a scatter plot of 'Openness' vs. 'Authoritative Leadership' with the regression line and save to a file
 plt.scatter(df['Openness'], df['Authoritative Leadership'], label='Data Points', color='blue', alpha=0.5)
